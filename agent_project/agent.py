@@ -1,6 +1,7 @@
 import os
 import logging
-from google.adk.agents import LoopAgent, LlmAgent
+from google.adk.agents import LlmAgent
+from google.adk import Workflow
 from tools import web_search_tool, weather_tool, database_tool
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
@@ -36,7 +37,7 @@ def setup_telemetry():
 setup_telemetry()
 
 # Create the LLM agent with tools
-llm_agent = LlmAgent(
+worker_agent = LlmAgent(
     name="worker_agent",
     model="gemini-2.5-flash",
     instruction="""You are a helpful assistant. Use your tools to answer user queries:
@@ -48,9 +49,8 @@ llm_agent = LlmAgent(
     tools=[web_search_tool, weather_tool, database_tool]
 )
 
-# Create the LoopAgent that orchestrates the workflow
-loop_agent = LoopAgent(
-    name="main_loop_agent",
-    sub_agents=[llm_agent],
-    max_iterations=3
+# Create the Workflow that orchestrates the execution
+workflow = Workflow(
+    name="main_workflow",
+    edges=[("START", worker_agent)]
 )
