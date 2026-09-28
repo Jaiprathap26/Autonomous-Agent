@@ -6,13 +6,13 @@ import os
 # Load environment variables
 load_dotenv()
 
-from agent import loop_agent
-from google.adk.runners import Runner
+from agent import workflow
+from google.adk import Runner
 
 # Initialize Streamlit page
 st.set_page_config(page_title="ADK Autonomous Agent", page_icon="🤖")
 st.title("Google ADK Autonomous Agent")
-st.markdown("This agent uses a `LoopAgent` to iteratively solve tasks using Web Search, Weather, and Database tools.")
+st.markdown("This agent uses a `Workflow` to iteratively solve tasks using Web Search, Weather, and Database tools.")
 
 # Validate API Key
 if not os.environ.get("GOOGLE_API_KEY") and not os.environ.get("GEMINI_API_KEY"):
@@ -29,7 +29,7 @@ for message in st.session_state.messages:
 
 # Function to run the agent async
 async def run_agent(prompt: str):
-    runner = Runner(agent=loop_agent)
+    runner = Runner(agent=workflow)
 
     # Store events to display
     events = []

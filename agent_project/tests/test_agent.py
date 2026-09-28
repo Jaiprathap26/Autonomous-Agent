@@ -8,7 +8,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from tools import web_search_tool, weather_tool, database_tool
-from agent import loop_agent, llm_agent
+from agent import workflow, worker_agent
 
 def test_web_search_tool_success():
     """Test web search tool with mocked successful request."""
@@ -69,11 +69,11 @@ def test_database_tool_error_handling():
 
 def test_agent_initialization():
     """Test that the agent was initialized correctly."""
-    assert loop_agent.name == "main_loop_agent"
-    assert loop_agent.max_iterations == 3
-    assert len(loop_agent.sub_agents) == 1
+    assert workflow.name == "main_workflow"
+    assert len(workflow.edges) == 1
+    assert workflow.edges[0] == ("START", worker_agent)
 
-    sub_agent = loop_agent.sub_agents[0]
-    assert sub_agent.name == "worker_agent"
-    assert sub_agent.model == "gemini-2.5-flash"
-    assert len(sub_agent.tools) == 3
+    # Test the worker agent directly
+    assert worker_agent.name == "worker_agent"
+    assert worker_agent.model == "gemini-2.5-flash"
+    assert len(worker_agent.tools) == 3
